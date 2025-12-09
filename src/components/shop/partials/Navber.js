@@ -86,7 +86,7 @@ const Navber = (props) => {
     },
   ];
 
-  const isLoggedIn = true;
+  const isLoggedIn = localStorage.getItem("jwt");
 
   return (
     <Fragment>
@@ -156,13 +156,24 @@ const Navber = (props) => {
             />
 
             {/* User Menu */}
-            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+            {isLoggedIn ? (
+              <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+                <Button
+                  type="text"
+                  icon={<UserOutlined />}
+                  style={{ color: "#595959" }}
+                />
+              </Dropdown>
+            ) : (
               <Button
                 type="text"
-                icon={<UserOutlined />}
+                icon={<LoginOutlined />}
+                onClick={loginModalOpen}
                 style={{ color: "#595959" }}
-              />
-            </Dropdown>
+              >
+                Đăng nhập
+              </Button>
+            )}
 
             {/* Cart */}
             <Badge

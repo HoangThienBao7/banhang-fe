@@ -4,6 +4,7 @@ import { Card, Form, Rate, Input, Button, Alert, message } from "antd";
 import { SendOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { reviewSubmitHanlder } from "./Action";
 import { LayoutContext } from "../layout";
+import { isAuthenticate } from "../auth/fetchApi";
 import { getSingleProduct } from "./FetchApi";
 
 const { TextArea } = Input;
@@ -45,7 +46,13 @@ const ReviewForm = (props) => {
     }
   };
 
-  const hasReviewed = false;
+  const ratingUserList = data.singleProductDetail.pRatingsReviews.map(
+    (item) => {
+      return item.user ? item.user._id : "";
+    }
+  );
+
+  const hasReviewed = ratingUserList.includes(isAuthenticate()?.user?._id);
 
   const onFinish = async (values) => {
     const formData = {
@@ -72,7 +79,15 @@ const ReviewForm = (props) => {
         />
       )}
 
-      {
+      {hasReviewed ? (
+        <Alert
+          message="Bạn đã đánh giá sản phẩm này rồi"
+          type="info"
+          icon={<CheckCircleOutlined />}
+          showIcon
+          style={{ marginTop: "24px" }}
+        />
+      ) : (
         <Card
           title={
             <div>
@@ -152,7 +167,7 @@ const ReviewForm = (props) => {
             </Form.Item>
           </Form>
         </Card>
-      }
+      )}
     </Fragment>
   );
 };

@@ -4,6 +4,9 @@ import {
   BlogIndex,
   ContactIndex,
   WishList,
+  ProtectedRoute,
+  AdminProtectedRoute,
+  CartProtectedRoute,
   PageNotFound,
   ProductDetails,
   ProductByCategory,
@@ -33,7 +36,11 @@ const Routes = (props) => {
           path="/products/category/:catId"
           component={ProductByCategory}
         />
-        <Route exact path="/checkout" component={CheckoutPage} />
+        <CartProtectedRoute
+          exact={true}
+          path="/checkout"
+          component={CheckoutPage}
+        />
         <Route
           exact
           path="/payment/vnpay-return"
@@ -42,16 +49,44 @@ const Routes = (props) => {
         {/* Shop & Public Routes End */}
 
         {/* Admin Routes */}
-        <Route exact path="/admin/dashboard" component={DashboardAdmin} />
-        <Route exact path="/admin/dashboard/categories" component={Categories} />
-        <Route exact path="/admin/dashboard/products" component={Products} />
-        <Route exact path="/admin/dashboard/orders" component={Orders} />
+        <AdminProtectedRoute
+          exact={true}
+          path="/admin/dashboard"
+          component={DashboardAdmin}
+        />
+        <AdminProtectedRoute
+          exact={true}
+          path="/admin/dashboard/categories"
+          component={Categories}
+        />
+        <AdminProtectedRoute
+          exact={true}
+          path="/admin/dashboard/products"
+          component={Products}
+        />
+        <AdminProtectedRoute
+          exact={true}
+          path="/admin/dashboard/orders"
+          component={Orders}
+        />
         {/* Admin Routes End */}
 
         {/* User Dashboard */}
-        <Route exact path="/user/profile" component={UserProfile} />
-        <Route exact path="/user/orders" component={UserOrders} />
-        <Route exact path="/user/setting" component={SettingUser} />
+        <ProtectedRoute
+          exact={true}
+          path="/user/profile"
+          component={UserProfile}
+        />
+        <ProtectedRoute
+          exact={true}
+          path="/user/orders"
+          component={UserOrders}
+        />
+        <ProtectedRoute
+          exact={true}
+          path="/user/setting"
+          component={SettingUser}
+        />
         {/* User Dashboard End */}
 
         {/* 404 Page */}
