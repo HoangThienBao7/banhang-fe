@@ -99,9 +99,7 @@ const AdminNavber = (props) => {
           </div>
           <div
             onClick={() => {
-              enqueueSnackbar("Tính năng chưa phát triển..!", {
-                variant: "error",
-              });
+              message.error("Tính năng chưa phát triển..!");
             }}
             className="hover:bg-gray-200 rounded-lg p-2"
             title="Search"
