@@ -13,6 +13,7 @@ import CheckoutPage from "./order/CheckoutPage";
 import VNPayReturn from "./order/VNPayReturn";
 import BlogIndex from "./blog/index";
 import ContactIndex from "./contact/index";
+import Shop from "./store/index";
 
 export {
   Home,
@@ -32,4 +33,5 @@ export {
   VNPayReturn,
   BlogIndex,
   ContactIndex,
+  Shop,
 };

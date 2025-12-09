@@ -10,6 +10,24 @@ export const getAllProduct = async () => {
   }
 };
 
+export const getDiscountProducts = async (limit = 8) => {
+  try {
+    let res = await axios.get(`${apiURL}/api/product/discount-products?limit=${limit}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getFeaturedProducts = async (limit = 8) => {
+  try {
+    let res = await axios.get(`${apiURL}/api/product/featured-products?limit=${limit}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const createPorductImage = async ({ pImage }) => {
   /* Most important part for uploading multiple image  */
   let formData = new FormData();

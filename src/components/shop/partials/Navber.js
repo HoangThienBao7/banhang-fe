@@ -130,6 +130,9 @@ const Navber = (props) => {
             className="hidden lg:flex"
           >
             <Menu.Item key="/" onClick={() => history.push("/")}>
+              Trang chủ
+            </Menu.Item>
+            <Menu.Item key="/shop" onClick={() => history.push("/shop")}>
               Cửa hàng
             </Menu.Item>
             <Menu.Item key="/blog" onClick={() => history.push("/blog")}>
@@ -221,6 +224,12 @@ const Navber = (props) => {
           >
             <Menu.Item key="/" onClick={() => {
               history.push("/");
+              dispatch({ type: "hamburgerToggle", payload: false });
+            }}>
+              Trang chủ
+            </Menu.Item>
+            <Menu.Item key="/shop" onClick={() => {
+              history.push("/shop");
               dispatch({ type: "hamburgerToggle", payload: false });
             }}>
               Cửa hàng

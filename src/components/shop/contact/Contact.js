@@ -53,7 +53,7 @@ const Contact = () => {
     Khám phá những thiết bị công nghệ mới nhất với tính năng tiên tiến nhất tại cửa hàng của chúng tôi. Hãy tận dụng các chương trình khuyến mãi đặc biệt để sở hữu sản phẩm yêu thích với giá ưu đãi.
   </p>
   <a
-    href="/san-pham"
+    href="/shop"
     className="btn btn-primary mt-3"
   >
     Khám phá sản phẩm
