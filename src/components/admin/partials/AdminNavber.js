@@ -1,11 +1,9 @@
-import { useSnackbar } from "notistack";
+import { message } from "antd";
 import React, { Fragment } from "react";
 import { useHistory } from "react-router-dom";
 
 const AdminNavber = (props) => {
   const history = useHistory();
-
-  const { enqueueSnackbar } = useSnackbar();
 
   const logout = () => {
     localStorage.removeItem("jwt");
@@ -21,9 +19,7 @@ const AdminNavber = (props) => {
         <div className="hidden lg:block lg:flex lg:items-center lg:space-x-4 mr-32">
           <span
             onClick={() => {
-              enqueueSnackbar("Tính năng chưa phát triển..!", {
-                variant: "error",
-              });
+              message.error("Tính năng chưa phát triển..!");
             }}
           >
             <svg
@@ -81,9 +77,7 @@ const AdminNavber = (props) => {
         <div className="flex items-center">
           <div
             onClick={() => {
-              enqueueSnackbar("Tính năng chưa phát triển..!", {
-                variant: "error",
-              });
+              message.error("Tính năng chưa phát triển..!");
             }}
             className="hover:bg-gray-200 rounded-lg p-2"
             title="Search"

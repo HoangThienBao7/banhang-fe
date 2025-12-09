@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import {SnackbarProvider} from 'notistack';
 import { ConfigProvider } from 'antd';
 import viVN from 'antd/lib/locale/vi_VN';
 import 'antd/dist/antd.css';
@@ -23,9 +22,7 @@ ReactDOM.render(
         },
       }}
     >
-      <SnackbarProvider maxSnack={3}> 
-        <App />
-      </SnackbarProvider>
+      <App />
     </ConfigProvider>
   </React.StrictMode>,
   document.getElementById("root")

@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { signupReq } from "./fetchApi";
-import { useSnackbar } from "notistack";
+import { message } from "antd";
 const Signup = ({ onSignupSuccess }) => {
   const [data, setData] = useState({
     name: "",
@@ -15,7 +15,7 @@ const Signup = ({ onSignupSuccess }) => {
   const alert = (msg, type) => (
     <div className={`text-sm text-${type}-500`}>{msg}</div>
   );
-  const { enqueueSnackbar } = useSnackbar();
+  
   const formSubmit = async () => {
     setData({ ...data, loading: true });
     if (data.cPassword !== data.password) {
@@ -43,9 +43,7 @@ const Signup = ({ onSignupSuccess }) => {
           cPassword: "",
         });
       } else if (responseData.success) {
-        enqueueSnackbar("Account Created Successfully..!", {
-          variant: "success",
-        });
+        message.success("Account Created Successfully..!");
         onSignupSuccess();
       }
     } catch (error) {
