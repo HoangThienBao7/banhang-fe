@@ -10,7 +10,7 @@ const Footer = (props) => {
       <div className="block-title" style={{ textAlign: "center", marginBottom: "20px" }}>
         <h2 style={{ fontSize: "28px", color: "#333", textTransform: "uppercase", fontWeight: "bold" }}>TIN TỨC CỬA HÀNG</h2>
       </div>
-      <div className="blog-inner" style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+      <div className="blog-inner" style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "space-between" }}>
         <div className="col-lg-6 col-md-6 col-sm-6" style={{ flex: "1", maxWidth: "48%", boxSizing: "border-box" }}>
           <div className="entry-thumb image-hover2" style={{ overflow: "hidden", borderRadius: "10px", marginBottom: "15px", position: "relative" }}>
             <a href="#">

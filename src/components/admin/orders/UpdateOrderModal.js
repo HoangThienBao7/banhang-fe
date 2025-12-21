@@ -38,6 +38,42 @@ const UpdateOrderModal = (props) => {
     }
   };
 
+  const isStatusDisabled = (value) => {
+    const currentStatus = data.updateOrderModal.status;
+    if (value === "Not processed") {
+      return (
+        currentStatus === "Processing" ||
+        currentStatus === "Shipped" ||
+        currentStatus === "Delivered" ||
+        currentStatus === "Cancelled"
+      );
+    }
+    if (value === "Processing") {
+      return (
+        currentStatus === "Shipped" ||
+        currentStatus === "Delivered" ||
+        currentStatus === "Cancelled"
+      );
+    }
+    if (value === "Shipped") {
+      return (
+        currentStatus === "Delivered" ||
+        currentStatus === "Cancelled"
+      );
+    }
+    if (value === "Delivered") {
+      return currentStatus === "Cancelled";
+    }
+    if (value === "Cancelled") {
+      return (
+        currentStatus === "Shipped" ||
+        currentStatus === "Delivered" ||
+        currentStatus === "Cancelled"
+      );
+    }
+    return false;
+  };
+
   return (
     <Fragment>
       {/* Black Overlay */}
@@ -91,21 +127,24 @@ const UpdateOrderModal = (props) => {
               className="px-4 py-2 border focus:outline-none"
               id="status"
             >
-              <option name="status" value="Not processed">
-                Not processed
-              </option>
-              <option name="status" value="Processing">
-                Processing
-              </option>
-              <option name="status" value="Shipped">
-                Shipped
-              </option>
-              <option name="status" value="Delivered">
-                Delivered
-              </option>
-              <option name="status" value="Cancelled">
-                Cancelled
-              </option>
+              {[
+                "Not processed",
+                "Processing",
+                "Shipped",
+                "Delivered",
+                "Cancelled",
+              ].map((item, index) => (
+                <option
+                  key={index}
+                  value={item}
+                  disabled={isStatusDisabled(item)}
+                  className={
+                    isStatusDisabled(item) ? "text-gray-300 bg-gray-100" : ""
+                  }
+                >
+                  {item}
+                </option>
+              ))}
             </select>
           </div>
           <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6">

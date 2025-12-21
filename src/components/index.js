@@ -16,6 +16,7 @@ import {
 } from "./shop";
 import { DashboardAdmin, Categories, Products, Orders } from "./admin";
 import { UserProfile, UserOrders, SettingUser } from "./shop/dashboardUser";
+import ScrollToTop from "./shop/partials/ScrollToTop";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -23,6 +24,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 const Routes = (props) => {
   return (
     <Router>
+      <ScrollToTop />
       <Switch>
         {/* Shop & Public Routes */}
         <Route exact path="/" component={Home} />

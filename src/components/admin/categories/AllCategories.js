@@ -126,9 +126,7 @@ const CategoryTable = ({ category, deleteCat, editCat }) => {
     <Fragment>
       <tr>
         <td className="p-2 text-left">
-          {category.cName.length > 20
-            ? category.cName.slice(0, 20) + "..."
-            : category.cName}
+          {category.cName.slice(0, 10)}...
         </td>
         <td className="p-2 text-left">
           {category.cDescription.length > 30

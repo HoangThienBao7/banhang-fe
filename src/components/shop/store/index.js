@@ -1,10 +1,12 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext, useReducer } from "react";
 import { useHistory } from "react-router-dom";
 import Layout from "../layout";
-import { Card, Spin, Empty, Rate, Tag, Row, Col, Input, Select, Typography, Space, Button } from "antd";
+import { Card, Spin, Empty, Rate, Tag, Row, Col, Select, Typography, Button } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { getAllProduct } from "../../admin/products/FetchApi";
 import { formatVND } from "../../../utils/formatCurrency";
+import { StoreContext, storeState, storeReducer } from "./StoreContext";
+import ProductCategory from "./ProductCategory";
 
 const { Meta } = Card;
 const { Title } = Typography;
@@ -98,60 +100,57 @@ export const ProductGrid = ({ products, wishlist, setWishlist }) => {
 };
 
 const ShopComponent = () => {
-  const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState([]);
+  const { data, dispatch } = useContext(StoreContext);
   const [display, setDisplay] = useState([]);
   const [wishlist, setWishlist] = useState(JSON.parse(localStorage.getItem("wishList")) || []);
-  const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      dispatch({ type: "loading", payload: true });
       try {
         const res = await getAllProduct();
         if (res && res.Products) {
-          setProducts(res.Products);
-          setDisplay(res.Products);
+          dispatch({ type: "setProducts", payload: res.Products });
         }
       } finally {
-        setLoading(false);
+        dispatch({ type: "loading", payload: false });
       }
     };
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    let arr = [...products];
-    if (search.trim()) {
-      const s = search.trim().toLowerCase();
-      arr = arr.filter((p) => p.pName.toLowerCase().includes(s));
+    if (data.products) {
+      let arr = [...data.products];
+      if (sort === "price_asc") arr.sort((a, b) => a.pPrice - b.pPrice);
+      else if (sort === "price_desc") arr.sort((a, b) => b.pPrice - a.pPrice);
+      else if (sort === "rating") arr.sort((a, b) => {
+        const ar = a.pRatingsReviews?.length ? a.pRatingsReviews.reduce((sum, r) => sum + Number(r.rating), 0) / a.pRatingsReviews.length : 0;
+        const br = b.pRatingsReviews?.length ? b.pRatingsReviews.reduce((sum, r) => sum + Number(r.rating), 0) / b.pRatingsReviews.length : 0;
+        return br - ar;
+      });
+      else arr.sort((a, b) => (a._id < b._id ? 1 : -1));
+      setDisplay(arr);
+    } else {
+      setDisplay([]);
     }
-    if (sort === "price_asc") arr.sort((a, b) => a.pPrice - b.pPrice);
-    else if (sort === "price_desc") arr.sort((a, b) => b.pPrice - a.pPrice);
-    else if (sort === "rating") arr.sort((a, b) => {
-      const ar = a.pRatingsReviews?.length ? a.pRatingsReviews.reduce((sum, r) => sum + Number(r.rating), 0) / a.pRatingsReviews.length : 0;
-      const br = b.pRatingsReviews?.length ? b.pRatingsReviews.reduce((sum, r) => sum + Number(r.rating), 0) / b.pRatingsReviews.length : 0;
-      return br - ar;
-    });
-    else arr.sort((a, b) => (a._id < b._id ? 1 : -1));
-    setDisplay(arr);
-  }, [search, sort, products]);
+  }, [sort, data.products]);
 
   return (
     <Fragment>
       <section style={{ maxWidth: 1400, margin: "0 auto", padding: "32px 24px" }}>
         <Title level={2} style={{ marginBottom: 16 }}>Cửa hàng</Title>
-        <Space size="middle" style={{ marginBottom: 24, width: "100%", display: "flex" }}>
-          <Input.Search placeholder="Tìm kiếm sản phẩm" allowClear onChange={(e) => setSearch(e.target.value)} style={{ maxWidth: 360 }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexWrap: "wrap", gap: 16 }}>
           <Select value={sort} style={{ width: 220 }} onChange={setSort}>
             <Option value="newest">Mới nhất</Option>
             <Option value="price_asc">Giá tăng dần</Option>
             <Option value="price_desc">Giá giảm dần</Option>
             <Option value="rating">Đánh giá cao</Option>
           </Select>
-        </Space>
-        {loading ? (
+        </div>
+        <ProductCategory />
+        {data.loading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: "80px 0" }}>
             <Spin size="large" />
           </div>
@@ -164,9 +163,12 @@ const ShopComponent = () => {
 };
 
 const Shop = () => {
+  const [data, dispatch] = useReducer(storeReducer, storeState);
   return (
     <Fragment>
-      <Layout children={<ShopComponent />} />
+      <StoreContext.Provider value={{ data, dispatch }}>
+        <Layout children={<ShopComponent />} />
+      </StoreContext.Provider>
     </Fragment>
   );
 };

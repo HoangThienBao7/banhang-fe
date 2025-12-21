@@ -63,7 +63,7 @@ const HomeComponent = () => {
           padding: "32px 24px",
         }}
       >
-        <ProductCategory />
+        {/* <ProductCategory /> */}
       </section>
       <section
         style={{
@@ -83,7 +83,7 @@ const HomeComponent = () => {
         </div>
       </section>
       <ProductSection title="Sản phẩm giảm giá" products={discounts} loading={loadingDiscount} wishlist={wishlist} setWishlist={setWishlist} />
-      <ProductSection title="Sản phẩm nổi bật" products={featured} loading={loadingFeatured} wishlist={wishlist} setWishlist={setWishlist} />
+      <ProductSection title="Sản phẩm mới nhất" products={featured} loading={loadingFeatured} wishlist={wishlist} setWishlist={setWishlist} />
     </Fragment>
   );
 };
