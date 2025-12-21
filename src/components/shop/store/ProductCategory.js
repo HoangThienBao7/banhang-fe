@@ -92,7 +92,7 @@ const ProductCategory = (props) => {
               fontWeight: 500,
             }}
           >
-            Lọc
+            Sắp xếp
           </Button>
           <Button
             type={data.searchDropdown ? "primary" : "text"}

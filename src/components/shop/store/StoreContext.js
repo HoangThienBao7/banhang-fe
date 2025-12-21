@@ -8,6 +8,7 @@ export const storeState = {
   searchDropdown: false,
   products: null,
   loading: false,
+  sort: "newest",
 };
 
 export const storeReducer = (state, action) => {
@@ -43,20 +44,21 @@ export const storeReducer = (state, action) => {
         ...state,
         products:
           action.productArray &&
-          action.productArray.filter((item) => {
-            if (
+          action.productArray.filter(
+            (item) =>
               item.pName.toUpperCase().indexOf(action.payload.toUpperCase()) !==
               -1
-            ) {
-              return item;
-            }
-            return null;
-          }),
+          ),
       };
     case "loading":
       return {
         ...state,
         loading: action.payload,
+      };
+    case "sort":
+      return {
+        ...state,
+        sort: action.payload,
       };
     default:
       return state;

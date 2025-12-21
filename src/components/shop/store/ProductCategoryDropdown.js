@@ -122,41 +122,10 @@ const CategoryList = () => {
 
 const FilterList = () => {
   const { data, dispatch } = useContext(StoreContext);
-  const [range, setRange] = useState(0);
 
-  const rangeHandle = (e) => {
-    setRange(e.target.value);
-    fetchData(e.target.value);
-  };
-
-  const fetchData = async (price) => {
-    if (price === "all") {
-      try {
-        let responseData = await getAllProduct();
-        if (responseData && responseData.Products) {
-          dispatch({ type: "setProducts", payload: responseData.Products });
-        }
-      } catch (error) {
-      }
-    } else {
-      dispatch({ type: "loading", payload: true });
-      try {
-        setTimeout(async () => {
-          let responseData = await productByPrice(price);
-          if (responseData && responseData.Products) {
-            dispatch({ type: "setProducts", payload: responseData.Products });
-            dispatch({ type: "loading", payload: false });
-          }
-        }, 700);
-      } catch (error) {
-        }
-    }
-  };
-
-  const closeFilterBar = () => {
-    fetchData("all");
+  const handleSortChange = (value) => {
+    dispatch({ type: "sort", payload: value });
     dispatch({ type: "filterListDropdown", payload: !data.filterListDropdown });
-    setRange(0);
   };
 
   return (
@@ -193,10 +162,10 @@ const FilterList = () => {
               color: "#262626",
             }}
           >
-            Lọc theo giá
+            Sắp xếp sản phẩm
           </div>
           <button
-            onClick={closeFilterBar}
+            onClick={() => dispatch({ type: "filterListDropdown", payload: !data.filterListDropdown })}
             style={{
               background: "transparent",
               border: "none",
@@ -238,37 +207,41 @@ const FilterList = () => {
             gap: "12px",
           }}
         >
-          <label
-            htmlFor="points"
-            style={{
-              fontSize: "14px",
-              color: "#595959",
-            }}
-          >
-            Giá (từ 0 đến 1.000.000₫):{" "}
-            <span
+          {[
+            { label: "Mới nhất", value: "newest" },
+            { label: "Giá tăng dần", value: "price_asc" },
+            { label: "Giá giảm dần", value: "price_desc" },
+            { label: "Đánh giá cao", value: "rating" },
+          ].map((item) => (
+            <div
+              key={item.value}
+              onClick={() => handleSortChange(item.value)}
               style={{
-                fontWeight: 600,
-                color: "#1890ff",
-                fontSize: "16px",
+                padding: "12px 16px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                backgroundColor: data.sort === item.value ? "#e6f7ff" : "#fff",
+                border: data.sort === item.value ? "1px solid #1890ff" : "1px solid #d9d9d9",
+                color: data.sort === item.value ? "#1890ff" : "#262626",
+                fontWeight: data.sort === item.value ? 600 : 400,
+                transition: "all 0.3s",
+              }}
+              onMouseEnter={(e) => {
+                if (data.sort !== item.value) {
+                  e.currentTarget.style.borderColor = "#1890ff";
+                  e.currentTarget.style.color = "#1890ff";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (data.sort !== item.value) {
+                  e.currentTarget.style.borderColor = "#d9d9d9";
+                  e.currentTarget.style.color = "#262626";
+                }
               }}
             >
-              {parseInt(range).toLocaleString("vi-VN")}₫
-            </span>
-          </label>
-          <input
-            value={range}
-            className="slider"
-            type="range"
-            id="points"
-            min="0"
-            max="1000000"
-            step="10000"
-            onChange={(e) => rangeHandle(e)}
-            style={{
-              width: "100%",
-            }}
-          />
+              {item.label}
+            </div>
+          ))}
         </div>
       </div>
     </div>

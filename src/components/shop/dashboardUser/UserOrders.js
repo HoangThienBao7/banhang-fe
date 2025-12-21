@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useContext } from "react";
+import React, { Fragment, useEffect, useContext, useState } from "react";
 import moment from "moment";
-import { Card, Tag, Spin, Empty, Row, Col, Divider, Typography, Space, Badge } from "antd";
+import { Card, Tag, Spin, Empty, Row, Col, Divider, Typography, Space, Badge, Tabs } from "antd";
 import {
   ShoppingOutlined,
   PhoneOutlined,
@@ -11,6 +11,8 @@ import {
   ClockCircleOutlined,
   CloseCircleOutlined,
   TruckOutlined,
+  InboxOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 import { fetchOrderByUser } from "./Action";
 import Layout, { DashboardUserContext } from "./Layout";
@@ -18,6 +20,7 @@ import { formatVND } from "../../../utils/formatCurrency";
 
 const { Title, Text } = Typography;
 const { Meta } = Card;
+const { TabPane } = Tabs;
 const apiURL = process.env.REACT_APP_API_URL;
 
 // Hàm lấy màu và icon cho status
@@ -260,6 +263,7 @@ const OrderCard = ({ order }) => {
 const OrdersComponent = () => {
   const { data, dispatch } = useContext(DashboardUserContext);
   const { OrderByUser: orders } = data;
+  const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
     fetchOrderByUser(dispatch);
@@ -282,6 +286,33 @@ const OrdersComponent = () => {
     );
   }
 
+  // Filter orders based on active tab
+  const getFilteredOrders = () => {
+    if (!orders) return [];
+    if (activeTab === "all") return orders;
+    
+    const statusMap = {
+      "not_processed": "Not processed",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    };
+
+    return orders.filter(order => order.status === statusMap[activeTab]);
+  };
+
+  const filteredOrders = getFilteredOrders();
+
+  const tabItems = [
+    { key: "all", label: "Tất cả", icon: <InboxOutlined /> },
+    { key: "not_processed", label: "Chưa xử lý", icon: <ClockCircleOutlined /> },
+    { key: "processing", label: "Đang xử lý", icon: <SyncOutlined /> },
+    { key: "shipped", label: "Đã giao", icon: <TruckOutlined /> },
+    { key: "delivered", label: "Đã nhận hàng", icon: <CheckCircleOutlined /> },
+    { key: "cancelled", label: "Đã hủy", icon: <CloseCircleOutlined /> },
+  ];
+
   return (
     <div style={{ width: "100%", padding: "0 16px", marginTop: 0 }}>
       <div style={{ marginBottom: 24 }}>
@@ -289,15 +320,66 @@ const OrdersComponent = () => {
           Đơn hàng của tôi
         </Title>
         <Text type="secondary">
-          {orders && orders.length > 0
-            ? `Bạn có ${orders.length} đơn hàng`
-            : "Bạn chưa có đơn hàng nào"}
+          Quản lý và theo dõi trạng thái đơn hàng của bạn
         </Text>
       </div>
 
-      {orders && orders.length > 0 ? (
-        <div>
-          {orders.map((order, index) => (
+      <Card
+        style={{
+          borderRadius: 12,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+          marginBottom: 24,
+        }}
+        bodyStyle={{ padding: "0 24px" }}
+      >
+        <Tabs
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          size="large"
+          tabBarStyle={{ marginBottom: 0 }}
+        >
+          {tabItems.map((item) => (
+            <TabPane
+              tab={
+                <span>
+                  {item.icon}
+                  {item.label}
+                  {orders && (
+                    <Badge
+                      count={
+                        item.key === "all"
+                          ? orders.length
+                          : orders.filter(
+                              (o) =>
+                                o.status ===
+                                {
+                                  not_processed: "Not processed",
+                                  processing: "Processing",
+                                  shipped: "Shipped",
+                                  delivered: "Delivered",
+                                  cancelled: "Cancelled",
+                                }[item.key]
+                            ).length
+                      }
+                      style={{
+                        marginLeft: 8,
+                        backgroundColor:
+                          activeTab === item.key ? "#1890ff" : "#d9d9d9",
+                      }}
+                      overflowCount={99}
+                    />
+                  )}
+                </span>
+              }
+              key={item.key}
+            />
+          ))}
+        </Tabs>
+      </Card>
+
+      {filteredOrders && filteredOrders.length > 0 ? (
+        <div style={{ minHeight: 300 }}>
+          {filteredOrders.map((order, index) => (
             <OrderCard key={order._id || index} order={order} />
           ))}
         </div>
@@ -313,7 +395,7 @@ const OrdersComponent = () => {
           <Empty
             description={
               <span style={{ fontSize: 16, color: "#8c8c8c" }}>
-                Bạn chưa có đơn hàng nào
+                Không tìm thấy đơn hàng nào trong mục này
               </span>
             }
             image={Empty.PRESENTED_IMAGE_SIMPLE}

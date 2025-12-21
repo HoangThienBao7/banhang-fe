@@ -103,7 +103,6 @@ const ShopComponent = () => {
   const { data, dispatch } = useContext(StoreContext);
   const [display, setDisplay] = useState([]);
   const [wishlist, setWishlist] = useState(JSON.parse(localStorage.getItem("wishList")) || []);
-  const [sort, setSort] = useState("newest");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,9 +122,9 @@ const ShopComponent = () => {
   useEffect(() => {
     if (data.products) {
       let arr = [...data.products];
-      if (sort === "price_asc") arr.sort((a, b) => a.pPrice - b.pPrice);
-      else if (sort === "price_desc") arr.sort((a, b) => b.pPrice - a.pPrice);
-      else if (sort === "rating") arr.sort((a, b) => {
+      if (data.sort === "price_asc") arr.sort((a, b) => a.pPrice - b.pPrice);
+      else if (data.sort === "price_desc") arr.sort((a, b) => b.pPrice - a.pPrice);
+      else if (data.sort === "rating") arr.sort((a, b) => {
         const ar = a.pRatingsReviews?.length ? a.pRatingsReviews.reduce((sum, r) => sum + Number(r.rating), 0) / a.pRatingsReviews.length : 0;
         const br = b.pRatingsReviews?.length ? b.pRatingsReviews.reduce((sum, r) => sum + Number(r.rating), 0) / b.pRatingsReviews.length : 0;
         return br - ar;
@@ -135,21 +134,15 @@ const ShopComponent = () => {
     } else {
       setDisplay([]);
     }
-  }, [sort, data.products]);
+  }, [data.sort, data.products]);
 
   return (
     <Fragment>
       <section style={{ maxWidth: 1400, margin: "0 auto", padding: "32px 24px" }}>
         <Title level={2} style={{ marginBottom: 16 }}>Cửa hàng</Title>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexWrap: "wrap", gap: 16 }}>
-          <Select value={sort} style={{ width: 220 }} onChange={setSort}>
-            <Option value="newest">Mới nhất</Option>
-            <Option value="price_asc">Giá tăng dần</Option>
-            <Option value="price_desc">Giá giảm dần</Option>
-            <Option value="rating">Đánh giá cao</Option>
-          </Select>
+        <div style={{ marginBottom: 24, flexWrap: "wrap", gap: 16 }}>
+          <ProductCategory />
         </div>
-        <ProductCategory />
         {data.loading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: "80px 0" }}>
             <Spin size="large" />
